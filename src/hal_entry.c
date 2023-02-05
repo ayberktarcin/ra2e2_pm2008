@@ -101,6 +101,7 @@ void hal_entry(void)
         if(g_timer_callback_flag){
             pm2008_tx_read_measurement();
             uart_rx_mesage();
+            pm2008_action();
             g_timer_callback_flag = false;
         }
 
@@ -131,12 +132,6 @@ static void check_reset_status(void)
         /* Clear the flag once read the value */
         R_SYSTEM->RSTSR1_b.WDTRF = RESET_VALUE;
 
-        /* Turn ON LED */
-#if defined (BOARD_RA4W1_EK) || defined (BOARD_RA6T1_RSSK)
-        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_LOW);
-#else
-        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_HIGH);
-#endif
         APP_PRINT ("\r\n************************ WDT Reset detected ************************\r\n\r\n");
     }
 }

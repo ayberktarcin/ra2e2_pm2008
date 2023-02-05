@@ -29,6 +29,12 @@
  **********************************************************************************************************************/
 
 /*
+ * External Global Variables
+ */
+/* LED Structure used to blink on board LED */
+extern bsp_leds_t g_bsp_leds;
+
+/*
  * Private function declarations
  */
 
@@ -338,6 +344,9 @@ void pm2008_tx_setup_continuous_particle_measuring(void){
     }
 }
 
+/*****************************************************************************************************************
+ *  @brief       Performs required openning sequence for pm2008
+ ****************************************************************************************************************/
 void pm2008_openning_sequence(void){
     /* OPEN Particle measurement mode in sensor */
     pm2008_tx_open_particle_measurement();
@@ -350,13 +359,32 @@ void pm2008_openning_sequence(void){
     APP_PRINT ("** PM2008 - Openning Sequence Completed ** \r\n");
 }
 
+/*****************************************************************************************************************
+ *  @brief      puts pm2008 on sleep mode
+ ****************************************************************************************************************/
 void pm2008_sleep_mode_on(void){
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
     APP_PRINT ("** PM2008 - Sleep Mode Activated ** \r\n");
 }
+/*****************************************************************************************************************
+ *  @brief      puts pm2008 on normal mode, wakes up sensor
+ ****************************************************************************************************************/
 void pm2008_sleep_mode_off(void){
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
     APP_PRINT ("** PM2008 - Normal Mode Activated** \r\n");
+}
+
+/*****************************************************************************************************************
+ *  @brief      takes action based on pm2008 on normal mode
+ ****************************************************************************************************************/
+void pm2008_action(void){
+    // Based on the value of pm particle, led is either turned on either turned off
+    if(pm2008.number_of_0p5_um > PM2008_05UM_THRESHOLD){
+        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_HIGH);
+    }else{
+        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_LOW);
+    }
+
 }
 
 /*****************************************************************************************************************

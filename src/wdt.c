@@ -38,12 +38,6 @@ fsp_err_t wdt_refresh(void){
     err = R_WDT_Refresh(&g_wdt_ctrl);
     if (FSP_SUCCESS != err)
     {
-        /* Turn ON LED to indicate error, along with output on RTT*/
-#if defined (BOARD_RA4W1_EK) || defined (BOARD_RA6T1_RSSK)
-        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_LOW);
-#else
-        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_HIGH);
-#endif
         /* Print Error on RTT console */
         APP_ERR_PRINT ("\r\n ** R_WDT_Refresh API failed ** \r\n");
     }

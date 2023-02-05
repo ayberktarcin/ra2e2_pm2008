@@ -53,6 +53,9 @@
 #define PM2008_UART_CMD_READ_SW_VERSION                   0x1E
 #define PM2008_UART_CMD_READ_SERIAL_NUMBER                0x1F
 
+
+#define PM2008_05UM_THRESHOLD             10
+
 /* Function declaration releated uart definitions */
 fsp_err_t uart_send_cmd(uint8_t *p_msg, uint8_t length);
 fsp_err_t uart_initialize(void);
@@ -67,6 +70,7 @@ void pm2008_tx_setup_continuous_particle_measuring(void);
 void pm2008_openning_sequence(void);
 void pm2008_sleep_mode_on(void);
 void pm2008_sleep_mode_off(void);
+void pm2008_action(void);
 
 typedef struct {
     uint8_t reserved : 4;
