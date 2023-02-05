@@ -24,6 +24,8 @@
 #include "common_utils.h"
 #include "timer_setup.h"
 #include "ext_irq_setup.h"
+#include "pm2008.h"
+#include "wdt.h"
 
 /*******************************************************************************************************************//**
  * @addtogroup r_wdt_ep
@@ -48,8 +50,6 @@ void R_BSP_WarmStart(bsp_warm_start_event_t event);
  */
 /* function used to read RTT input and proceed */
 static fsp_err_t read_Input_from_RTT(void);
-/* function used to enable wdt in debug mode */
-static void enable_wdt_count_in_debug_mode(void);
 /* function used to check if reset is caused by wdt or not */
 static void check_reset_status(void);
 
@@ -209,18 +209,6 @@ fsp_err_t read_Input_from_RTT(void)
     }
     user_data = RESET_VALUE;
     return err;
-}
-
-/*******************************************************************************************************************//**
- * This function is called to enable WDT counter in debug mode.
- * @brief    Enables WDT counter to count in debug mode.
- * @param[IN]   None
- * @retval      None
- **********************************************************************************************************************/
-static void enable_wdt_count_in_debug_mode(void)
-{
-    /* As per hardware manual's DBGREG module, section 2.6.4.2:- Clear this bit to enable WDT Reset/NMI in debug mode */
-    R_DEBUG->DBGSTOPCR_b.DBGSTOP_WDT = RESET_VALUE;
 }
 
 /*******************************************************************************************************************//**

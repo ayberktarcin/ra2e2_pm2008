@@ -7,19 +7,22 @@ C_SRCS += \
 ../src/ext_irq_setup.c \
 ../src/hal_entry.c \
 ../src/pm2008.c \
-../src/timer_setup.c 
+../src/timer_setup.c \
+../src/wdt.c 
 
 C_DEPS += \
 ./src/ext_irq_setup.d \
 ./src/hal_entry.d \
 ./src/pm2008.d \
-./src/timer_setup.d 
+./src/timer_setup.d \
+./src/wdt.d 
 
 OBJS += \
 ./src/ext_irq_setup.o \
 ./src/hal_entry.o \
 ./src/pm2008.o \
-./src/timer_setup.o 
+./src/timer_setup.o \
+./src/wdt.o 
 
 SREC += \
 ui_project.srec 

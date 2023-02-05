@@ -1,4 +1,4 @@
-src/hal_entry.o: ../src/hal_entry.c ../src/common_utils.h \
+src/wdt.o: ../src/wdt.c ../src/common_utils.h \
  C:/Users/Tarcin/e2_studio/workspace/ui_project/ra_gen/hal_data.h \
  C:/Users/Tarcin/e2_studio/workspace/ui_project/ra/fsp/inc/api/bsp_api.h \
  C:/Users/Tarcin/e2_studio/workspace/ui_project/ra/fsp/inc/fsp_common_api.h \
@@ -64,7 +64,7 @@ src/hal_entry.o: ../src/hal_entry.c ../src/common_utils.h \
  C:/Users/Tarcin/e2_studio/workspace/ui_project/ra_cfg/fsp_cfg/r_wdt_cfg.h \
  C:/Users/Tarcin/e2_studio/workspace/ui_project/ra/fsp/inc/api/r_wdt_api.h \
  ../src/SEGGER_RTT/SEGGER_RTT.h ../src/SEGGER_RTT/SEGGER_RTT_Conf.h \
- ../src/timer_setup.h ../src/ext_irq_setup.h ../src/pm2008.h ../src/wdt.h
+ ../src/wdt.h
 ../src/common_utils.h:
 C:/Users/Tarcin/e2_studio/workspace/ui_project/ra_gen/hal_data.h:
 C:/Users/Tarcin/e2_studio/workspace/ui_project/ra/fsp/inc/api/bsp_api.h:
@@ -132,7 +132,4 @@ C:/Users/Tarcin/e2_studio/workspace/ui_project/ra_cfg/fsp_cfg/r_wdt_cfg.h:
 C:/Users/Tarcin/e2_studio/workspace/ui_project/ra/fsp/inc/api/r_wdt_api.h:
 ../src/SEGGER_RTT/SEGGER_RTT.h:
 ../src/SEGGER_RTT/SEGGER_RTT_Conf.h:
-../src/timer_setup.h:
-../src/ext_irq_setup.h:
-../src/pm2008.h:
 ../src/wdt.h:
