@@ -6,6 +6,7 @@
 #include "common_utils.h"
 #include "timer_setup.h"
 #include "wdt.h"
+#include "pm2008.h"
 
 /*******************************************************************************************************************//**
  * @addtogroup r_wdt_ep
@@ -124,8 +125,10 @@ void gpt_callback(timer_callback_args_t *p_args)
     /* Toggle LED */
     level_led ^= BSP_IO_LEVEL_HIGH;
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[1], level_led);
+
     APP_PRINT ("** R_GPT_Callback API successful!** \r\n");
 
+    /*MCU enters normal power mode after exiting this callback*/
     g_timer_callback_flag =true;
 }
 

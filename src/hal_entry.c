@@ -107,13 +107,8 @@ void hal_entry(void)
     /* Start GPT timer in Periodic mode */
     err = timer_start();
 
-    /* OPEN Particle measurement mode in sensor */
-    pm2008_tx_open_particle_measurement();
-    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
-
-    /* Setup continuous measurement mode in sensor */
-    pm2008_tx_setup_continuous_particle_measuring();
-    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+    /* Openning and setting configuration for PM2008 */
+    pm2008_openning_sequence();
 
 
     while(true)
@@ -127,7 +122,13 @@ void hal_entry(void)
             g_timer_callback_flag = false;
         }
 
+        /*Put Sensor & MCU in low-power mode*/
+        pm2008_sleep_mode_on();
         lpm_mode_enter(APP_LPM_SW_STANDBY_STATE, &g_lpm_ctrl);
+
+        /*MCU listens GPT callback to open. MCU halts at the above pointer if timer callback is not triggered*/
+        /*Put sensor in normal power mode*/
+        pm2008_sleep_mode_off();
 
         R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
     }

@@ -64,6 +64,9 @@ void pm2008_tx_read_measurement(void);
 void pm2008_tx_open_particle_measurement(void);
 void pm2008_tx_close_particle_measurement(void);
 void pm2008_tx_setup_continuous_particle_measuring(void);
+void pm2008_openning_sequence(void);
+void pm2008_sleep_mode_on(void);
+void pm2008_sleep_mode_off(void);
 
 typedef struct {
     uint8_t reserved : 4;

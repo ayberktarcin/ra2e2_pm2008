@@ -338,6 +338,26 @@ void pm2008_tx_setup_continuous_particle_measuring(void){
     }
 }
 
+void pm2008_openning_sequence(void){
+    /* OPEN Particle measurement mode in sensor */
+    pm2008_tx_open_particle_measurement();
+    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+
+    /* Setup continuous measurement mode in sensor */
+    pm2008_tx_setup_continuous_particle_measuring();
+    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+
+    APP_PRINT ("** PM2008 - Openning Sequence Completed ** \r\n");
+}
+
+void pm2008_sleep_mode_on(void){
+    R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
+    APP_PRINT ("** PM2008 - Sleep Mode Activated ** \r\n");
+}
+void pm2008_sleep_mode_off(void){
+    R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
+    APP_PRINT ("** PM2008 - Normal Mode Activated** \r\n");
+}
 
 /*****************************************************************************************************************
  *  @brief       decode pm2008 measurement data
