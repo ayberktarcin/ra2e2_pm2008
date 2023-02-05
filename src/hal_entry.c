@@ -39,7 +39,7 @@
  */
 /* LED Structure used to blink on board LED */
 extern bsp_leds_t g_bsp_leds;
-extern volatile uint8_t g_timer_overflow_counter;
+extern volatile bool g_timer_callback_flag;
 
 /*
  * function declarations
@@ -92,20 +92,37 @@ void hal_entry(void)
     /* Enable WDT to count and generate NMI or Reset when the debugger(JLink) is connected. */
     enable_wdt_count_in_debug_mode();
 
-    /* Open WDT. For every GPT timeout, wdt will get refreshed. */
+    /* Open Watchdog Timer*/
     err = init_wdt_module();
 
-    /* Open WDT. For every GPT timeout, wdt will get refreshed. */
+    /* Initialize Low Power Module */
     err = lpm_init();
+
+    /* Initialize UART perihperal */
+    err = uart_initialize();
 
     /* Start GPT timer in Periodic mode */
     err = timer_start();
 
+    /* OPEN Particle measurement mode in sensor */
+    pm2008_tx_open_particle_measurement();
+    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+
+    /* Setup continuous measurement mode in sensor */
+    pm2008_tx_setup_continuous_particle_measuring();
+    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+
 
     while(true)
     {
-        /* Refresh WDT, if user has not pressed the push button */
+        /* Refresh WDT */
         wdt_refresh();
+
+        if(g_timer_callback_flag){
+            pm2008_tx_read_measurement();
+            uart_rx_mesage();
+            g_timer_callback_flag = false;
+        }
 
         lpm_mode_enter(APP_LPM_SW_STANDBY_STATE, &g_lpm_ctrl);
 

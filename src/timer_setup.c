@@ -22,7 +22,7 @@ extern bsp_leds_t g_bsp_leds;
  * Global Variables
  */
 /* Variable to capture timer overflow counts and print WDT status */
-volatile uint32_t g_timer_overflow_counter = RESET_VALUE;
+volatile bool g_timer_callback_flag = false;
 
 /*******************************************************************************************************************//**
  * @brief     Initialize the GPT timer in Periodic mode.
@@ -104,6 +104,7 @@ void gpt_callback(timer_callback_args_t *p_args)
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[1], level_led);
     APP_PRINT ("** R_GPT_Callback API successful!** \r\n");
 
+    g_timer_callback_flag =true;
 }
 
 /*******************************************************************************************************************//**
