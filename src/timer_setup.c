@@ -69,6 +69,28 @@ fsp_err_t timer_start(void)
 }
 
 /*******************************************************************************************************************//**
+ * @brief    Start the GPT HAL timer and return the error to the Application.
+ * @param[IN]   None
+ * @retval FSP_SUCCESS                 Timer driver closed successfully.
+ * @retval Any Other Error code apart from FSP_SUCCES  Unsuccessful to start timer
+ ***********************************************************************************************************************/
+fsp_err_t timer_stop(void)
+{
+    /* variable to track error and return values */
+    fsp_err_t err = FSP_SUCCESS;
+
+    /* Stop GPT timer */
+    err = R_GPT_Stop(&g_timer_ctrl);
+    if (FSP_SUCCESS != err)
+    {
+        /* Print Error on RTT console */
+        APP_ERR_PRINT("\r\n ** R_GPT_Stop API failed ** \r\n");
+    }
+
+    return err;
+}
+
+/*******************************************************************************************************************//**
  * @brief    Close the GPT HAL driver and Handle the return closing API error, to the Application.
  * @param[IN]   None
  * @retval      None

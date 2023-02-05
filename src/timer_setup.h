@@ -41,6 +41,7 @@
  */
 fsp_err_t init_gpt_module(void);
 fsp_err_t timer_start(void);
+fsp_err_t timer_stop(void);
 void deinit_gpt_module(void);
 
 #endif /* TIMER_SETUP_H_ */

@@ -23,6 +23,9 @@
 
 #include "common_utils.h"
 #include "ext_irq_setup.h"
+#include "pm2008.h"
+#include "lpm.h"
+#include "timer_setup.h"
 
 /*******************************************************************************************************************//**
  * @addtogroup r_wdt_ep
@@ -104,18 +107,20 @@ void ext_irq_callback(external_irq_callback_args_t *p_args)
 {
     /* variable to track error and return values */
     fsp_err_t err = FSP_SUCCESS;
+    static bool toggle = false;
+    toggle ^= true;
 
+    APP_PRINT("\r\nPush button is pressed\r\n");
     FSP_PARAMETER_NOT_USED(p_args);
 
-    /* By pressing push button, gpt timer will stops running */
-    err = R_GPT_Stop(&g_timer_ctrl);
-    if (FSP_SUCCESS != err)
-    {
-        /* Print Error on RTT console */
-        APP_ERR_PRINT("\r\n ** R_GPT_Stop API failed ** \r\n");
-        return;
+    if(toggle){
+        err = timer_stop();
+        APP_PRINT("**Stopping GPT module ==> Effect of Resetting due to WDT **\r\n");
+    }else{
+        err = timer_start();
+        APP_PRINT("**Starting GPT module ==> Effect of Resetting due to WDT**\r\n");
     }
-    APP_PRINT("\r\nPush button is pressed\r\nGPT timer stopped.\r\n");
+
 }
 
 /*******************************************************************************************************************//**

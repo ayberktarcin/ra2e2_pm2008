@@ -89,6 +89,9 @@ void hal_entry(void)
     /* Initializing External IRQ */
     err = init_icu_module();
 
+    /* Enable External IRQ */
+    err = enable_icu_module();
+
     /* Enable WDT to count and generate NMI or Reset when the debugger(JLink) is connected. */
     enable_wdt_count_in_debug_mode();
 
@@ -151,7 +154,7 @@ static void check_reset_status(void)
 #else
         R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_HIGH);
 #endif
-        APP_PRINT ("\r\n************************ WDT Reset detected ************************\r\n");
+        APP_PRINT ("\r\n************************ WDT Reset detected ************************\r\n\r\n");
     }
 }
 
