@@ -365,6 +365,8 @@ void pm2008_openning_sequence(void){
  *  @brief      puts pm2008 on sleep mode
  ****************************************************************************************************************/
 void pm2008_sleep_mode_on(void){
+    /* Note: Datasheet indcicates that there is pull up resistor inside the SET and RESET. No matter there is signal input or not, these two pins will work
+    normally. Thus even this function operates sensor sleep mode could not be activated properly*/
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
     R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
     APP_PRINT ("** PM2008 - Sleep Mode Activated ** \r\n");
@@ -373,6 +375,8 @@ void pm2008_sleep_mode_on(void){
  *  @brief      puts pm2008 on normal mode, wakes up sensor
  ****************************************************************************************************************/
 void pm2008_sleep_mode_off(void){
+    /* Note: Datasheet indcicates that there is pull up resistor inside the SET and RESET. No matter there is signal input or not, these two pins will work
+    normally. Thus even this function operates sensor sleep mode could not be activated properly*/
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
     R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
     APP_PRINT ("** PM2008 - Normal Mode Activated** \r\n");
@@ -394,7 +398,6 @@ void pm2008_action(void){
 /*****************************************************************************************************************
  *  @brief       decode pm2008 measurement data
  ****************************************************************************************************************/
-
 static fsp_err_t pm2008_decode_message(const uint8_t *const buffer,int8_t dataLength){
     fsp_err_t err = FSP_SUCCESS;
     memcpy(g_rx_buffer,buffer,(size_t)dataLength);
@@ -448,7 +451,6 @@ static fsp_err_t pm2008_decode_message(const uint8_t *const buffer,int8_t dataLe
 /*****************************************************************************************************************
  *  @brief       func for PM2008_UART_CMD_READ_PARTICLE. 4 bytes 1 short value
  ****************************************************************************************************************/
-
 static uint16_t byte_2_short(const uint8_t *const buffer, uint8_t index){
     return (uint16_t)((((uint16_t)buffer[index])<< 24) | (((uint16_t)buffer[index+1])<< 16) | (((uint16_t)buffer[index+2])<< 8) | ((uint16_t)buffer[index+3]));
 }

@@ -62,7 +62,7 @@ void hal_entry(void)
         APP_ERR_TRAP (FSP_ERR_UNSUPPORTED);
     }
 
-    // Initialize ioports
+    // Initialize BSP ioports
     R_BSP_WarmStart(BSP_WARM_START_POST_C);
 
     /* Initializing for detection of reset status */
@@ -98,11 +98,14 @@ void hal_entry(void)
 
     while(true)
     {
+        // Delay for while loop to not execute continuously
         R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
 
         /* Refresh WDT */
         wdt_refresh();
 
+        /* g_timer_callback_flag is set from timer interrupt callback.
+         * If GPT callback is not triggered this condition is not acticated*/
         if(g_timer_callback_flag){
             pm2008_tx_read_measurement();
             uart_rx_mesage();
