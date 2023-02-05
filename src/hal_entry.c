@@ -26,6 +26,7 @@
 #include "ext_irq_setup.h"
 #include "pm2008.h"
 #include "wdt.h"
+#include "lpm.h"
 
 /*******************************************************************************************************************//**
  * @addtogroup r_wdt_ep
@@ -48,8 +49,6 @@ void R_BSP_WarmStart(bsp_warm_start_event_t event);
 /*
  * private function declarations
  */
-/* function used to read RTT input and proceed */
-static fsp_err_t read_Input_from_RTT(void);
 /* function used to check if reset is caused by wdt or not */
 static void check_reset_status(void);
 
@@ -96,6 +95,9 @@ void hal_entry(void)
     /* Open WDT. For every GPT timeout, wdt will get refreshed. */
     err = init_wdt_module();
 
+    /* Open WDT. For every GPT timeout, wdt will get refreshed. */
+    err = lpm_init();
+
     /* Start GPT timer in Periodic mode */
     err = timer_start();
 
@@ -105,87 +107,12 @@ void hal_entry(void)
         /* Refresh WDT, if user has not pressed the push button */
         wdt_refresh();
 
-//        /* Process input only when User has provided one */
-//        if(APP_CHECK_DATA)
-//        {
-//            err = read_Input_from_RTT();
-//            if(FSP_SUCCESS != err)
-//            {
-//                /* Close timer and external IRQ module */
-//                deinit_gpt_module();
-//                deinit_icu_module();
-//                APP_ERR_TRAP (err);
-//            }
-//        }
+        lpm_mode_enter(APP_LPM_SW_STANDBY_STATE, &g_lpm_ctrl);
 
-        R_BSP_SoftwareDelay(1000, BSP_DELAY_UNITS_MILLISECONDS);
+        R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
     }
 }
 
-/*******************************************************************************************************************//**
- * This function is called to read user input from RTT using RTT API.
- * @brief    Read user input from RTT. Handle the Error internally with Proper Message. Application handles the rest.
- * @param[IN]   None
- * @retval      Any Other Error code apart from FSP_SUCCES  Unsuccessful to perform operation
- **********************************************************************************************************************/
-fsp_err_t read_Input_from_RTT(void)
-{
-    fsp_err_t err = FSP_SUCCESS;     // Error status
-
-    /* Variable to store user input */
-    uint8_t rByte[BUFFER_SIZE] = { RESET_VALUE };
-    uint8_t user_data = RESET_VALUE;
-
-    /* Read First byte of data provided by user */
-    APP_READ(rByte);
-
-    user_data = (uint8_t) atoi((char *)&rByte);
-
-    switch (user_data)
-    {
-        case ENABLE_WDT:
-        {
-            /* Enable WDT to count and generate NMI or Reset when the debugger(JLink) is connected. */
-            enable_wdt_count_in_debug_mode();
-
-            /* Open WDT. For every GPT timeout, wdt will get refreshed. */
-            err = init_wdt_module();
-
-            /* Start GPT timer in Periodic mode */
-            err = timer_start();
-            if (FSP_SUCCESS != err)
-            {
-                APP_ERR_PRINT ("\r\n ** GPT TIMER START FAILED ** \r\n");
-                return err;
-            }
-
-            /* Enable External IRQ */
-            err = enable_icu_module();
-            if(FSP_SUCCESS != err)
-            {
-                APP_ERR_PRINT ("\r\n ** EXTERNAL IRQ ENABLE FAILED ** \r\n");
-                return err;
-            }
-
-            /* Print message to indicate user about application status. */
-            APP_PRINT ("\r\nWDT initialized, GPT Timer Started")
-            APP_PRINT("\r\nTo stop WDT counter from refreshing, press the push button\r\n");
-        }
-        break;
-
-        default:
-        {
-            /* Menu for User Selection */
-            APP_PRINT ("\r\nInvalid Input");
-            APP_PRINT ("\r\nPlease provide input from below option");
-            APP_PRINT ("\r\nEnter 1 to Enable WDT\r\n");
-            APP_PRINT ("User Input:  ");
-        }
-        break;
-    }
-    user_data = RESET_VALUE;
-    return err;
-}
 
 /*******************************************************************************************************************//**
  * This function is called to check whether reset is caused by WDT.
