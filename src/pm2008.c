@@ -389,8 +389,10 @@ static fsp_err_t pm2008_decode_message(const uint8_t *const buffer,int8_t dataLe
             pm2008.number_of_10_um = byte_2_short(g_rx_buffer,47);
             pm2008.alarm_flag = *((tsPM2008Alarm*)&g_rx_buffer[51]);
 
-            APP_PRINT ("**PM1.0 Grimm: %d, PM2.5 Grimm: %d, PM10.0 Grimm: %d** \r\n",pm2008.pm1p0_grimm,pm2008.pm2p5_grimm,pm2008.pm10_grimm);
+            APP_PRINT ("**Received PM2008 Sensor DATA:** \r\n");
+            //APP_PRINT ("**PM1.0 Grimm: %d, PM2.5 Grimm: %d, PM10.0 Grimm: %d** \r\n",pm2008.pm1p0_grimm,pm2008.pm2p5_grimm,pm2008.pm10_grimm);
             //APP_PRINT ("**PM1.0 TSI: %d, PM2.5 TSI: %d, PM10.0 TSI: %d** \r\n",pm2008.pm1p0_tsi,pm2008.pm2p5_tsi,pm2008.pm10_tsi);
+            APP_PRINT ("**#Number 0.3 um: %d, **#Number 0.5 um: %d, **#Number 1.0 um: %d, ** \r\n",pm2008.number_of_0p3_um,pm2008.number_of_0p5_um,pm2008.number_of_1_um);
             break;
         case PM2008_UART_CMD_OPEN_CLOSE_PARTICLE_MEASUREMENT:
             pm2008.status = g_rx_buffer[3];
