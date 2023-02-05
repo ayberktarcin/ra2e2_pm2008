@@ -40,15 +40,13 @@
 
 #define RESET_VALUE             (0x00)
 
-#define EP_VERSION              ("1.0")
-#define MODULE_NAME             "r_wdt"
+#define EP_VERSION              ("2.0")
+#define MODULE_NAME             "pm2008"
 #define BANNER_1                "\r\n******************************************************************"
-#define BANNER_2                "\r\n*   Renesas FSP Example Project for "MODULE_NAME" Module                 *"
-#define BANNER_3                "\r\n*   Example Project Version %s                                  *"
+#define BANNER_2                "\r\n*   Project for "MODULE_NAME" Module                 *"
+#define BANNER_3                "\r\n*   Project Version %s                                  *"
 #define BANNER_4                "\r\n*   Flex Software Pack Version  %d.%d.%d                            *"
 #define BANNER_5                "\r\n******************************************************************"
-#define BANNER_6                "\r\nRefer to readme.txt file for more details on Example Project and" \
-        "\r\nFSP User's Manual for more information about "MODULE_NAME" driver\r\n"
 
 #define SEGGER_INDEX            (0)
 

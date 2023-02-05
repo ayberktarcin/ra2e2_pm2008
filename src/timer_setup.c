@@ -98,8 +98,11 @@ void gpt_callback(timer_callback_args_t *p_args)
 {
     FSP_PARAMETER_NOT_USED(p_args);
 
-    /* Refresh WDT, if user has not pressed the push button */
-    wdt_refresh();
+    static bsp_io_level_t level_led = BSP_IO_LEVEL_HIGH;
+    /* Toggle LED */
+    level_led ^= BSP_IO_LEVEL_HIGH;
+    R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[1], level_led);
+
 }
 
 /*******************************************************************************************************************//**

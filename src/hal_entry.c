@@ -71,19 +71,8 @@ void hal_entry(void)
     APP_PRINT (BANNER_3, EP_VERSION);
     APP_PRINT (BANNER_4, version.version_id_b.major, version.version_id_b.minor, version.version_id_b.patch);
     APP_PRINT (BANNER_5);
-    APP_PRINT (BANNER_6);
 
-    APP_PRINT ("\r\nThis example project demonstrates the typical use of the WDT HAL module APIs");
-    APP_PRINT ("\r\nUser input initializes the WDT and start GPT timer");
-    APP_PRINT ("\r\nWDT counter is refreshed periodically every 1 second when the GPT timer expires");
-
-#if BSP_MCU_GROUP_RA6M3
-    APP_PRINT ("\r\nOn pressing the Push button S2, WDT counter stops from refreshing");
-#else
-    APP_PRINT ("\r\nOn pressing the Push button, WDT counter stops from refreshing");
-#endif
-
-    APP_PRINT ("\r\nWDT resets  the MCU in 2 seconds\r\n");
+    APP_PRINT ("\r\n FSP Modules used in this project: gpt, lpm, uart, ext_irq\n");
 
     /* If this board has no LEDs then trap here */
     if (RESET_VALUE == g_bsp_leds.led_count)
@@ -92,52 +81,44 @@ void hal_entry(void)
         APP_ERR_TRAP (FSP_ERR_UNSUPPORTED);
     }
 
+    /* Initializing for detection of reset status */
     check_reset_status();
 
     /* Initializing GPT in PWM Mode */
     err = init_gpt_module();
-    if(FSP_SUCCESS != err)
-    {
-        /* Timer init failed */
-        APP_ERR_PRINT ("\r\n ** GPT TIMER INIT FAILED ** \r\n");
-        APP_ERR_TRAP (err);
-    }
 
     /* Initializing External IRQ */
     err = init_icu_module();
-    if(FSP_SUCCESS != err)
-    {
-        /* External IRQ init failed, cleanup the timer initialization */
-        APP_ERR_PRINT ("\r\n ** EXTERNAL IRQ INIT FAILED ** \r\n");
-        deinit_gpt_module();
-        APP_ERR_TRAP (err);
-    }
 
-    /* Menu for User Selection */
-    APP_PRINT ("\r\nEnter 1 to Enable WDT\r\n");
-    APP_PRINT ("User Input:  ");
+    /* Enable WDT to count and generate NMI or Reset when the debugger(JLink) is connected. */
+    enable_wdt_count_in_debug_mode();
+
+    /* Open WDT. For every GPT timeout, wdt will get refreshed. */
+    err = init_wdt_module();
+
+    /* Start GPT timer in Periodic mode */
+    err = timer_start();
+
 
     while(true)
     {
-        /* Process input only when User has provided one */
-        if(APP_CHECK_DATA)
-        {
-            err = read_Input_from_RTT();
-            if(FSP_SUCCESS != err)
-            {
-                /* Close timer and external IRQ module */
-                deinit_gpt_module();
-                deinit_icu_module();
-                APP_ERR_TRAP (err);
-            }
-        }
-        /* For every 3Sec. RTT prints WDT refresh message.
-         * This is done to avoid the continuous print message on RTT*/
-        if (WDT_REFRESH_COUNTER_VALUE == g_timer_overflow_counter)
-        {
-            g_timer_overflow_counter = RESET_VALUE;
-            APP_PRINT("\r\nWDT counter Refreshed.");
-        }
+        /* Refresh WDT, if user has not pressed the push button */
+        wdt_refresh();
+
+//        /* Process input only when User has provided one */
+//        if(APP_CHECK_DATA)
+//        {
+//            err = read_Input_from_RTT();
+//            if(FSP_SUCCESS != err)
+//            {
+//                /* Close timer and external IRQ module */
+//                deinit_gpt_module();
+//                deinit_icu_module();
+//                APP_ERR_TRAP (err);
+//            }
+//        }
+
+        R_BSP_SoftwareDelay(1000, BSP_DELAY_UNITS_MILLISECONDS);
     }
 }
 
