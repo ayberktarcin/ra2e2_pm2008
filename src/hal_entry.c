@@ -62,6 +62,9 @@ void hal_entry(void)
         APP_ERR_TRAP (FSP_ERR_UNSUPPORTED);
     }
 
+    // Initialize ioports
+    R_BSP_WarmStart(BSP_WARM_START_POST_C);
+
     /* Initializing for detection of reset status */
     check_reset_status();
 
@@ -95,6 +98,8 @@ void hal_entry(void)
 
     while(true)
     {
+        R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+
         /* Refresh WDT */
         wdt_refresh();
 
@@ -112,8 +117,6 @@ void hal_entry(void)
         /*MCU listens GPT callback to open. MCU halts at the above pointer if timer callback is not triggered*/
         /*Put sensor in normal power mode*/
         pm2008_sleep_mode_off();
-
-        R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
     }
 }
 

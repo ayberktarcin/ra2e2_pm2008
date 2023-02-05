@@ -350,11 +350,13 @@ void pm2008_tx_setup_continuous_particle_measuring(void){
 void pm2008_openning_sequence(void){
     /* OPEN Particle measurement mode in sensor */
     pm2008_tx_open_particle_measurement();
-    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+    R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
+    uart_rx_mesage();
 
     /* Setup continuous measurement mode in sensor */
     pm2008_tx_setup_continuous_particle_measuring();
-    R_BSP_SoftwareDelay(500, BSP_DELAY_UNITS_MILLISECONDS);
+    R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
+    uart_rx_mesage();
 
     APP_PRINT ("** PM2008 - Openning Sequence Completed ** \r\n");
 }
@@ -364,6 +366,7 @@ void pm2008_openning_sequence(void){
  ****************************************************************************************************************/
 void pm2008_sleep_mode_on(void){
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_LOW);
+    R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
     APP_PRINT ("** PM2008 - Sleep Mode Activated ** \r\n");
 }
 /*****************************************************************************************************************
@@ -371,6 +374,7 @@ void pm2008_sleep_mode_on(void){
  ****************************************************************************************************************/
 void pm2008_sleep_mode_off(void){
     R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t) BSP_IO_PORT_01_PIN_09, BSP_IO_LEVEL_HIGH);
+    R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MILLISECONDS);
     APP_PRINT ("** PM2008 - Normal Mode Activated** \r\n");
 }
 
