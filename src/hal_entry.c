@@ -168,12 +168,7 @@ fsp_err_t read_Input_from_RTT(void)
             enable_wdt_count_in_debug_mode();
 
             /* Open WDT. For every GPT timeout, wdt will get refreshed. */
-            err = R_WDT_Open (&g_wdt_ctrl, &g_wdt_cfg);
-            if (FSP_SUCCESS != err)
-            {
-                APP_ERR_PRINT ("\r\n ** R_WDT_Open API Failed ** \r\n");
-                return err;
-            }
+            err = init_wdt_module();
 
             /* Start GPT timer in Periodic mode */
             err = timer_start();

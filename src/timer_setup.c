@@ -5,6 +5,7 @@
 
 #include "common_utils.h"
 #include "timer_setup.h"
+#include "wdt.h"
 
 /*******************************************************************************************************************//**
  * @addtogroup r_wdt_ep
@@ -95,40 +96,10 @@ void deinit_gpt_module(void)
  **********************************************************************************************************************/
 void gpt_callback(timer_callback_args_t *p_args)
 {
-    /* variable to track error and return values */
-    fsp_err_t err = FSP_SUCCESS;
-
-    /* variable to toggle LED */
-#if defined (BOARD_RA4W1_EK) || defined (BOARD_RA6T1_RSSK)
-    static bsp_io_level_t level_led = BSP_IO_LEVEL_LOW;
-#else
-    static bsp_io_level_t level_led = BSP_IO_LEVEL_HIGH;
-#endif
-
     FSP_PARAMETER_NOT_USED(p_args);
 
     /* Refresh WDT, if user has not pressed the push button */
-    err = R_WDT_Refresh(&g_wdt_ctrl);
-    if (FSP_SUCCESS != err)
-    {
-        /* Turn ON LED to indicate error, along with output on RTT*/
-#if defined (BOARD_RA4W1_EK) || defined (BOARD_RA6T1_RSSK)
-        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_LOW);
-#else
-        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_HIGH);
-#endif
-        /* Print Error on RTT console */
-        APP_ERR_PRINT ("\r\n ** R_WDT_Refresh API failed ** \r\n");
-    }
-    else
-    {
-        /* Counter is used to count the number of times GPT callback triggered. */
-        g_timer_overflow_counter++;
-
-        /* Toggle LED */
-        level_led ^= BSP_IO_LEVEL_HIGH;
-        R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], level_led);
-    }
+    wdt_refresh();
 }
 
 /*******************************************************************************************************************//**

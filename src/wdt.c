@@ -20,21 +20,46 @@ volatile uint32_t g_wdt_counter = RESET_VALUE;
 
 
 fsp_err_t init_wdt_module(void){
-
-    return FSP_SUCCESS;
-
+    fsp_err_t err = FSP_SUCCESS;     // Error status
+    err = R_WDT_Open (&g_wdt_ctrl, &g_wdt_cfg);
+    if (FSP_SUCCESS != err)
+    {
+        APP_ERR_PRINT ("\r\n ** R_WDT_Open API Failed ** \r\n");
+        return err;
+    }
+    return err;
 }
 
 fsp_err_t wdt_refresh(void){
+    fsp_err_t err = FSP_SUCCESS;     // Error status
+    static bsp_io_level_t level_led = BSP_IO_LEVEL_HIGH;
 
-    return FSP_SUCCESS;
+    /* Refresh WDT*/
+    err = R_WDT_Refresh(&g_wdt_ctrl);
+    if (FSP_SUCCESS != err)
+    {
+        /* Turn ON LED to indicate error, along with output on RTT*/
+#if defined (BOARD_RA4W1_EK) || defined (BOARD_RA6T1_RSSK)
+        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_LOW);
+#else
+        R_IOPORT_PinWrite (&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], BSP_IO_LEVEL_HIGH);
+#endif
+        /* Print Error on RTT console */
+        APP_ERR_PRINT ("\r\n ** R_WDT_Refresh API failed ** \r\n");
+    }
+    else
+    {
+        /* Counter is used to count the number of times GPT callback triggered. */
+        g_wdt_counter++;
 
+        /* Toggle LED */
+        level_led ^= BSP_IO_LEVEL_HIGH;
+        R_IOPORT_PinWrite(&g_ioport_ctrl, (bsp_io_port_pin_t)g_bsp_leds.p_leds[0], level_led);
+        /* Print Error on RTT console */
+        APP_PRINT ("** R_WDT_Refresh API successful!** \r\n");
+    }
+    return err;
 }
-
-void deinit_wdt_module(void){
-    return FSP_SUCCESS;
-}
-
 
 /*******************************************************************************************************************//**
  * This function is called to enable WDT counter in debug mode.
