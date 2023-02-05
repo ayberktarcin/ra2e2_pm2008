@@ -15,8 +15,18 @@ Overall, this project aims to provide a low-cost, yet reliable and efficient sol
 * Sensor: Cubic PM2008 - https://en.gassensor.com.cn/ParticulateMatterSensor/info_itemid_237.html
 
 # Setup
+## Block Configuration of EK-RA2E2 and PM2008
+![](Documents/RA2E2_PM2008_UART_Congig.png)
 
+## Pin Configuration
+![](Documents/PinConfig.png)
 
-# Pin Configuration
+## Photo of EK-RA2E2 and PM2008 Connection
+![](Documents/SetupPhoto.jpeg)
 
-# RTT Viewer Log
+# RTT Viewer Logs
+SEGGER RTT tool is used in this project for monitoring. 
+Note: SEGGER Real-Time Terminal (RTT) Viewer is a powerful tool for debugging embedded systems. It provides a convenient way to view and analyze real-time data from an embedded system, making it an essential tool for software engineers and developers. It can be used with a J-link Arm Debugger.
+
+# Running Application Log
+![](Documents/RTTViewerOutput.PNG)
